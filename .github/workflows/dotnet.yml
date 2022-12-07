@@ -3,14 +3,14 @@
 name: .NET Build
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  workflow_call:
+   inputs:
+      project-path:
+        required: true
+        type: string
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -20,8 +20,8 @@ jobs:
       with:
         dotnet-version: 7.0.x
     - name: Restore dependencies
-      run: dotnet restore ./day1/csharp
+      run: dotnet restore ${{inputs.project-path}}
     - name: Build
-      run: dotnet build ./day1/csharp --no-restore
+      run: dotnet build ${{inputs.project-path}} --no-restore
     - name: Test
-      run: dotnet test ./day1/csharp --no-build --verbosity normal
+      run: dotnet test ${{inputs.project-path}} --no-build --verbosity normal
