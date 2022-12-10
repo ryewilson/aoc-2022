@@ -1,4 +1,4 @@
-﻿namespace Lib;
+﻿namespace ElfLib;
 public class Class1
 {
 
