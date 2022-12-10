@@ -1,2 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿using ElfLib;
+
+string[] allLines = File.ReadAllLines(args[0]);
+
