@@ -23,8 +23,11 @@ class Warehouse:
     
     all_stacks = {1: col_1, 2: col_2, 3: col_3, 4: col_4, 5: col_5, 6:col_6, 7:col_7, 8:col_8, 9:col_9}
     
-    def get_stack(num) -> LifoQueue:
+    def get_stack(self, num: int) -> LifoQueue:
         return self.all_stacks[num]
+        
+    def print_top(self) -> None:
+        print(self.col_1.get(), self.col_2.get(), self.col_3.get(),self.col_4.get(), self.col_5.get(), self.col_6.get(), self.col_7.get(), self.col_8.get(), self.col_9.get())
         
     def __str__(self): 
         return self.col_1.__str__()
@@ -40,18 +43,25 @@ def run():
         lines = f.readlines()
 
     # line 11 starts the commands
-    commands = lines[11: ]
+    commands = lines[10: ]
     # handle "move x from stack-y to stack-z" command
     wh = Warehouse()
+    
+    for l in commands:
+        process_command(l, wh)
+        
+    # need top letter of each stack
+    wh.print_top()
 
     
 def process_command(line: str, wh: Type[Warehouse]):
     # split on " "
-    line_commands = line.split(" ") 
+    line_commands = line.strip().split(" ") 
     # ignore 0, 2, 4
     # 1 = how many crates to move
     # 3 = source stack
     # 5 = dest stack
+    print(line_commands)
     num_crates = int(line_commands[1])
     source = int(line_commands[3])
     dest = int(line_commands[5])
