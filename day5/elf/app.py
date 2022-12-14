@@ -72,9 +72,14 @@ def move_crates(wh: Type[Warehouse], num: int, source: int, dest: int):
     source_stack = wh.get_stack(source)
     dest_stack = wh.get_stack(dest)
     
+    temp_stack = LifoQueue(50)
+
     for val in range(num):
         crate = source_stack.get() 
-        dest_stack.put(crate)      
+        temp_stack.put(crate)
+        
+    for crate in range(num):
+        dest_stack.put(temp_stack.get())
 
 
     
