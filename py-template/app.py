@@ -6,6 +6,7 @@ def run():
     with open('input.txt') as f:
         lines = f.readlines()
 
+    # do something to each line and create a list with the resulting items
     #splitLines = [process_line(x) for x in lines] 
 
     

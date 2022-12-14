@@ -10,16 +10,17 @@ This repo contains attempts to solve the challenges for the 2022 [Advent Of Code
 [Day 2 --> Rock Paper Scissors](day2)
 [Day 3 --> Rucksack](day3)
 [Day 4 --> Cleaning](day4)
+[Day 5 --> Supply Stacks](day4)
 
 ## Languages
 
 ### Used
 
 C#
+Python
 
 ### TODO?
 
-Python
 Rust
 Java
 C++
