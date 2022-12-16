@@ -24,18 +24,13 @@ This repo contains attempts to solve the challenges for the 2022 [Advent Of Code
 
 ### Used
 
-C#
-
-Python
+- C#
+- Python
 
 ### TODO?
 
-Rust
-
-Java
-
-C++
-
-Ruby
-
-Go
+- Rust
+- Java
+- C++
+- Ruby
+- Go
