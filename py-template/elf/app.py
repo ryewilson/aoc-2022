@@ -1,3 +1,5 @@
+from queue import LifoQueue
+from typing import Type, List
 
 def run():
     """main entry point
@@ -10,11 +12,6 @@ def run():
     #splitLines = [process_line(x) for x in lines] 
 
     
-def process_line(line=""):
-    # split on ,
-    bothElves = line.split(",") 
-    return ElfSector(bothElves[0]), ElfSector(bothElves[1])
-
 
     
 class HelperClass:
