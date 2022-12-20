@@ -7,6 +7,11 @@ class Direction(Enum):
     D = 2
     L = 3
     R = 4
+    
+class RopeMarker(Enum):
+    HEAD = 1
+    TAIL = 2
+    MIDDLE = 3
 
 def run():
     """main entry point
@@ -33,9 +38,10 @@ def get_direction(dir_str: str) -> Type[Direction]:
 
 class RopePoint:
     
-    def __init__(self) -> None:
+    def __init__(self, marker=RopeMarker.MIDDLE) -> None:
         self.x = 0
         self.y = 0
+        self.marker = marker
 
     
 class RopePosition:
@@ -43,14 +49,9 @@ class RopePosition:
     
     def __init__(self) -> None:
         self.tail_positions = []
-        self.head_x = 0
-        self.head_y = 0
-        self.tail_x = 0
-        self.tail_y = 0
-    
-    # Q's
-    # how to track unique tail spots? -> 2d list? 1dlist with x,y coordinates as string, then "get unique elements"
-    
+        #self.all_knots = [RopePoint(RopeMarker.HEAD), RopePoint(RopeMarker.TAIL)]
+        self.all_knots = [RopePoint(RopeMarker.HEAD), RopePoint(), RopePoint(), RopePoint(), RopePoint(), RopePoint(), RopePoint(), RopePoint(), RopePoint(), RopePoint(RopeMarker.TAIL)]
+        
     def move(self, direction: Type[Direction], value: int) -> None:
         # simulate array by tracking position of H and T? (x-y coordinates)
         # each call to this method moves the head in one direction
@@ -73,18 +74,29 @@ class RopePosition:
         self.move_vert(-1)
     
     def move_vert(self, increment_by:int) -> None:
-        self.head_y += increment_by
-        # if tail is more than 1 space away, move closer
-        if abs(self.tail_y - self.head_y) > 1:
-            if self.tail_x != self.head_x:
-                # if H and T aren't in the same column then 
-                # need to move one x AND one y
-                if self.head_x > self.tail_x:
-                    self.tail_x += 1
-                else:
-                    self.tail_x -= 1
-            self.tail_y += increment_by
-        self.track_tail_position()
+        next_moved = True
+        
+        # head always moves
+        self.all_knots[0].y += increment_by
+        
+        for index,current_knot in enumerate(self.all_knots):
+            if current_knot.marker != RopeMarker.TAIL and next_moved:
+                next_moved = False
+                next_knot = self.all_knots[index + 1]
+                # if tail is more than 1 space away, move closer
+                if abs(next_knot.y - current_knot.y) > 1:
+                    if next_knot.x != current_knot.x:
+                        # if H and T aren't in the same column then 
+                        # need to move one x AND one y
+                        if current_knot.x > next_knot.x:
+                            next_knot.x += 1
+                        else:
+                            next_knot.x -= 1
+                    next_knot.y += increment_by
+                    next_moved = True # only continue moving knots if this one moved
+                    
+                if next_knot.marker == RopeMarker.TAIL:
+                    self.track_tail_position()
         
     def move_right(self):
         self.move_hor(1)
@@ -93,21 +105,33 @@ class RopePosition:
         self.move_hor(-1)
         
     def move_hor(self, increment_by:int) -> None:
-        self.head_x += increment_by
-        # if tail is more than 1 space away, move closer
-        if abs(self.tail_x - self.head_x) > 1:
-            if self.tail_y != self.head_y:
-                # if H and T aren't in the same row then 
-                # need to move one x AND one y
-                if self.head_y > self.tail_y:
-                    self.tail_y += 1
-                else:
-                    self.tail_y -= 1
-            self.tail_x += increment_by
-        self.track_tail_position()
+        next_moved = True
+        self.all_knots[0].x += increment_by
+
+        for index,current_knot in enumerate(self.all_knots):
+            # Only continue if we're not at the tail
+            if current_knot.marker != RopeMarker.TAIL and next_moved:
+                next_moved = False
+                next_knot = self.all_knots[index + 1]
+                
+                # if tail is more than 1 space away, move closer
+                if abs(next_knot.x - current_knot.x) > 1:
+                    if next_knot.y != current_knot.y:
+                        # if H and T aren't in the same row then 
+                        # need to move one x AND one y
+                        if current_knot.y > next_knot.y:
+                            next_knot.y += 1
+                        else:
+                            next_knot.y -= 1
+                    next_knot.x += increment_by
+                    next_moved = True
+                    
+                if next_knot.marker == RopeMarker.TAIL:
+                    self.track_tail_position()
         
     def track_tail_position(self):
-        combined_position = f'{self.tail_x},{self.tail_y}'
+        num_knots = len(self.all_knots)
+        combined_position = f'{self.all_knots[num_knots - 1].x},{self.all_knots[num_knots - 1].y}'
         if combined_position not in self.tail_positions:
             self.tail_positions.append(combined_position)
         
@@ -116,7 +140,8 @@ class RopePosition:
         return len(self.tail_positions)
         
     def __str__(self): 
-        return  f'head: {self.head_x},{self.head_y} - tail: {self.tail_x},{self.tail_y}'
+        num = len(self.all_knots)
+        return  f'head: {self.all_knots[0].x},{self.all_knots[0].y} - tail: {self.all_knots[num-1].x},{self.all_knots[num-1].y}'
     
     def __repr__(self):
         return self.__str__()
