@@ -20,6 +20,10 @@ This repo contains attempts to solve the challenges for the 2022 [Advent Of Code
 
 [Day 7 --> Drive space](day7)
 
+[Day 8 --> Tree House](day8)
+
+[Day 9 --> Rope bridge](day9)
+
 ## Languages
 
 ### Used
