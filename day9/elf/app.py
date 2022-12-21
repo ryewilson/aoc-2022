@@ -18,7 +18,7 @@ def run():
     """
     # Load the file
     # input
-    with open('input.txt') as f:
+    with open('testinput2.txt') as f:
         lines = f.readlines()
 
     rope = run_simulation(lines)
@@ -48,15 +48,16 @@ class RopePosition:
     '''Simulates a rope with head and tail. Tail always follows head'''
     
     def __init__(self) -> None:
-        self.tail_positions = []
+        self.tail_positions = ["0,0"]
         #self.all_knots = [RopePoint(RopeMarker.HEAD), RopePoint(RopeMarker.TAIL)]
         self.all_knots = [RopePoint(RopeMarker.HEAD), RopePoint(), RopePoint(), RopePoint(), RopePoint(), RopePoint(), RopePoint(), RopePoint(), RopePoint(), RopePoint(RopeMarker.TAIL)]
         
     def move(self, direction: Type[Direction], value: int) -> None:
         # simulate array by tracking position of H and T? (x-y coordinates)
         # each call to this method moves the head in one direction
+        print (f'{direction.name} {value}')
         for _ in range(0, value):
-            print(self.__str__())
+            #print(f'before: {self.__str__()}')
             match direction:
                 case Direction.U:
                     self.move_up()
@@ -66,6 +67,8 @@ class RopePosition:
                     self.move_left()
                 case Direction.R:
                     self.move_right()
+            print(f'after: {self.__str__()}')
+
         
     def move_up(self):
         self.move_vert(1)
@@ -83,8 +86,17 @@ class RopePosition:
             if current_knot.marker != RopeMarker.TAIL and next_moved:
                 next_moved = False
                 next_knot = self.all_knots[index + 1]
-                # if tail is more than 1 space away, move closer
-                if abs(next_knot.y - current_knot.y) > 1:
+                #if tail is more than 1 space away, move closer
+                if abs(next_knot.y - current_knot.y) == 2 and abs(next_knot.x - current_knot.x) == 2:
+                    next_knot.y += increment_by
+                    if current_knot.x > next_knot.x:
+                        next_knot.x += 2
+                    else:
+                        next_knot.x -= 2
+                    next_moved = True
+                elif abs(next_knot.y - current_knot.y) > 1:
+                    next_knot.y += increment_by
+                    
                     if next_knot.x != current_knot.x:
                         # if H and T aren't in the same column then 
                         # need to move one x AND one y
@@ -92,7 +104,7 @@ class RopePosition:
                             next_knot.x += 1
                         else:
                             next_knot.x -= 1
-                    next_knot.y += increment_by
+                    
                     next_moved = True # only continue moving knots if this one moved
                     
                 if next_knot.marker == RopeMarker.TAIL:
@@ -114,8 +126,16 @@ class RopePosition:
                 next_moved = False
                 next_knot = self.all_knots[index + 1]
                 
-                # if tail is more than 1 space away, move closer
-                if abs(next_knot.x - current_knot.x) > 1:
+                if abs(next_knot.x - current_knot.x) == 2 and abs(next_knot.y - current_knot.y) == 2:
+                    next_knot.x += increment_by
+                    if current_knot.y > next_knot.y:
+                        next_knot.y += 2
+                    else:
+                        next_knot.y -= 2
+                    next_moved = True
+                # if next knot is more than 1 space away, move closer
+                elif abs(next_knot.x - current_knot.x) > 1:
+                    next_knot.x += increment_by
                     if next_knot.y != current_knot.y:
                         # if H and T aren't in the same row then 
                         # need to move one x AND one y
@@ -123,14 +143,14 @@ class RopePosition:
                             next_knot.y += 1
                         else:
                             next_knot.y -= 1
-                    next_knot.x += increment_by
+                    
                     next_moved = True
                     
                 if next_knot.marker == RopeMarker.TAIL:
                     self.track_tail_position()
         
     def track_tail_position(self):
-        num_knots = len(self.all_knots)
+        num_knots = len(self.all_knots) 
         combined_position = f'{self.all_knots[num_knots - 1].x},{self.all_knots[num_knots - 1].y}'
         if combined_position not in self.tail_positions:
             self.tail_positions.append(combined_position)
